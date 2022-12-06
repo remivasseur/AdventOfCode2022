@@ -1,11 +1,10 @@
 package com.gitlab.doxterh.aoc2022.day05;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Stack;
 
 import org.junit.jupiter.api.Test;
