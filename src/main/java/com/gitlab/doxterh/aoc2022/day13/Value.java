@@ -3,16 +3,30 @@ package com.gitlab.doxterh.aoc2022.day13;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gitlab.doxterh.aoc2022.utils.Logger;
+
 public class Value {
 	public final String rawValue;
 	public boolean isList = false;
 	public boolean isInteger = false;
 
 	public final List<Value> elements;
+	
+	public int size() {
+		return elements.size();
+	}
 
 	public Value(String value) {
 		this.rawValue = value;
 		this.elements = parse(value);
+	}
+	
+	public Integer intValue() {
+		if (isInteger) {
+			return Integer.parseInt(rawValue);
+		} else {
+			throw new RuntimeException(rawValue + " is not an int");
+		}
 	}
 
 	public List<Value> parse(String value) {
@@ -64,6 +78,58 @@ public class Value {
 
 	public String toString() {
 		return rawValue;
+	}
+	public int compare(Value right) {
+		return compare(right, "");
+	}
+	
+	public int compare(Value right, String prefix) {
+		
+		Logger.debug(prefix + "- Compare " + this + " vs " + right);
+		
+		if (this.isInteger && right.isInteger) {
+			int result = this.intValue().compareTo(right.intValue());
+			
+			if (result < 0) {
+				Logger.debug(prefix + "\t- Left side is smaller, so inputs are in the right order");
+			} else if (result > 0) {
+				Logger.debug(prefix + "\t- Right side is smaller, so inputs are not in the right order");
+			}
+			
+			return result;
+		} else if (this.isInteger && right.isList) {
+			Logger.debug(prefix + "\t- Mixed types; convert left to ["+this.rawValue+"] and retry comparison");
+			
+			return new Value("[" + this.rawValue + "]").compare(right, prefix + "\t");
+		} else if (this.isList && right.isInteger) {
+			Logger.debug(prefix + "\t- Mixed types; convert right to ["+right.rawValue+"] and retry comparison");
+			
+			return this.compare(new Value("[" + right.rawValue +  "]"), prefix + "\t");
+		} else {
+			for (int i = 0; i < Math.max(size(), right.size()); i++) {
+
+				if (i < size() && i < right.size()) {
+					Value leftValue = elements.get(i);
+					Value rightValue = right.elements.get(i);
+					
+					int result = leftValue.compare(rightValue, prefix + "\t");
+					
+					if (result != 0) {
+						return result;
+					}
+				} else if (i >= size()){
+					Logger.debug(prefix + "\t- Left side ran out of items, so inputs are in the right order");
+					return -1;
+				} else if (i >= right.size()){
+					Logger.debug(prefix + "\t- Right side ran out of items, so inputs are not in the right order");
+					return 1;
+				}else {
+					break;
+				}
+			}
+		}
+		
+		return 0;
 	}
 
 }

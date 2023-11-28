@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 
-public class Step1Test {
+public class Step2Test {
 	@Test
-	void shouldReturn13ForTestData() {
-		assertEquals(13,Step1.resolve(Data.TEST.split("\n")));
+	void test() {
+		int result = Step2.resolve(Data.TEST.split("\n"));
+		
+		assertEquals(140, result);
 	}
 	
 }

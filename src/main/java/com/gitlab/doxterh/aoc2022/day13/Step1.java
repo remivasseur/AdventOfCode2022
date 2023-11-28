@@ -1,22 +1,32 @@
 package com.gitlab.doxterh.aoc2022.day13;
 
-public class Step1 {
+import com.gitlab.doxterh.aoc2022.utils.Logger;
 
+public class Step1 {
+	
+	
 	public static void main(String[] args) {
-		resolve(Data.GAME.split("\n"));
+		Logger.ENABLE = false;
+		int result = resolve(Data.GAME.split("\n"));
+		
+		System.out.println(result);
 	}
 
 
 	public static int resolve(String[] lines) {
-
+		int sum = 0;
 		for (int i=0; i < lines.length; i+=3) {
 			Pair pair = new Pair(lines[i], lines[i+1]);
+			int pairIndex = i/3 + 1;
 			
-			System.out.println("== Pair " + (i/3 + 1) + " ==");
-			pair.compare();
+			Logger.debug("== Pair " + pairIndex + " ==");
+			
+			if (pair.isInRightOrder()) {
+				sum += pairIndex;
+			}
 		};
 		
-		return -1;
+		return sum;
 	}
 	
 
