@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Value {
 	public final String rawValue;
+	public boolean isList = false;
+	public boolean isInteger = false;
 
 	public final List<Value> elements;
 
@@ -14,46 +16,50 @@ public class Value {
 	}
 
 	public List<Value> parse(String value) {
-		System.err.println("Parsing " + value);
 		List<Value> elements = new ArrayList<Value>();
 
-		int index = 0;
-		int startOffset = 0;
-		int endOffset = 0;
-		int level = 0;
-		String tmpValue;
-		for (char c : value.toCharArray()) {
-			tmpValue = value.substring(startOffset, endOffset);
-			if (c == '[') {
-				if (index == 0) {
-					startOffset = index + 1;
-					endOffset = startOffset;
-				} else {
+		if (Character.isDigit(value.charAt(0))) {
+			isList = false;
+			isInteger = true;
+
+			return null;
+		} else if (value.charAt(0) == '[') {
+			isList = true;
+			isInteger = false;
+
+			String subValue = value.substring(1, value.length() - 1);
+
+			int index = 0;
+			int startOffset = 0;
+			int level = 0;
+			for (char c : subValue.toCharArray()) {
+				if (c == '[') {
 					level++;
-					startOffset = index;
-					endOffset = startOffset;
-				}
-			} else if (c == ']') {
-				if (index == value.length() - 1) {
-					elements.add(new Value(value.substring(startOffset, index)));
-				} else {
+					if (level == 1) {
+						startOffset = index;
+					}
+				} else if (c == ']') {
 					level--;
-
 				}
+
+				else if (c == ',' && level == 0) {
+					String tempValue = subValue.substring(startOffset, index);
+					elements.add(new Value(tempValue));
+					startOffset += tempValue.length() + 1;
+				}
+
+				if (index == subValue.length() - 1) {
+					elements.add(new Value(subValue.substring(startOffset, index + 1)));
+				}
+
+				index++;
 			}
 
-			else if (c == ',' && level==0) {
-				elements.add(new Value(value.substring(startOffset, index)));
-				startOffset += tmpValue.length() + 1;
-				endOffset = startOffset;
-			} else {
-				endOffset++;
-			}
-
-			index++;
+			return elements;
+		} else {
+			return null;
 		}
 
-		return elements;
 	}
 
 	public String toString() {

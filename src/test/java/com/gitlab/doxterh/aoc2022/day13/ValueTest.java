@@ -1,6 +1,7 @@
 package com.gitlab.doxterh.aoc2022.day13;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -75,5 +76,66 @@ public class ValueTest {
 
 	}
 	
+	@Test
+	void shouldParseListWithNestedList() {
+
+		Value value = new Value("[1,[2,[3,4]],5]");
+		assertEquals(3, value.elements.size());
+		
+		Value value1 = value.elements.get(0);
+		assertEquals("1", value1.toString());
+		
+		Value value2 = value.elements.get(1);
+		assertEquals("[2,[3,4]]", value2.toString());
+	
+		Value value3 = value.elements.get(2);
+		assertEquals("5", value3.toString());
+		
+
+	}
+	
+	@Test
+	void shouldParseListWithComplexList() {
+
+		Value value = new Value("[1,[2,[3,[4,[5,6,7]]]],8,9]");
+		assertEquals(4, value.elements.size());
+		
+		Value value1 = value.elements.get(0);
+		assertEquals("1", value1.toString());
+		
+		Value value2 = value.elements.get(1);
+		assertEquals("[2,[3,[4,[5,6,7]]]]", value2.toString());
+	
+		Value value3 = value.elements.get(2);
+		assertEquals("8", value3.toString());
+		
+		Value value4 = value.elements.get(3);
+		assertEquals("9", value4.toString());
+
+	}
+	
+	
+	@Test
+	void shouldParseEmptyList() {
+
+		Value value = new Value("[[]]");
+		assertEquals(1, value.elements.size());
+		
+		Value value1 = value.elements.get(0);
+		assertTrue(value1.elements.isEmpty());
+	}
+	
+	@Test
+	void shouldParseNestedEmptyList() {
+
+		Value value = new Value("[[[]]]");
+		assertEquals(1, value.elements.size());
+		
+		Value value1 = value.elements.get(0);
+		assertEquals(1, value1.elements.size());
+		
+		Value value2 = value1.elements.get(0);
+		assertTrue(value2.elements.isEmpty());
+	}
 	
 }
