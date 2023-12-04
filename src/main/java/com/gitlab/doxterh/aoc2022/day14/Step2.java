@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.gitlab.doxterh.aoc2022.utils.Logger;
 
-public class Step1 {
+public class Step2 {
 
 	public static Grid grid;
 
@@ -28,7 +28,7 @@ public class Step1 {
 		}
 		Logger.debug(grid);
 		
-		System.out.println("Grains de sable :" + i);
+		System.out.println("Grains de sable :" + (i+1));
 	}
 
 	public static boolean addSand() {
@@ -37,7 +37,9 @@ public class Step1 {
 		int sandY = 0;
 
 		boolean isBlocked = false;
+		int iteration = 0;
 		while (true) {
+
 			if (grid.get(sandX, sandY).value() == '!') {
 				return false;
 			}
@@ -52,17 +54,23 @@ public class Step1 {
 			} else {
 				break;
 			}
-
+			iteration++;
 		}
 		
-		grid.get(sandX, sandY).value('O');
-		return true;
+		if (sandX == 500 && sandY == 0) {
+			return false;
+		} else {
+			grid.get(sandX, sandY).value('O');
+			return true;
+		}
+		
+		
 	}
 
 	private static Grid initGrid(String[] lines) {
 
-		int minX = 500;
-		int maxX = 500;
+		int minX = 0;
+		int maxX = 1000;
 		int minY = 0;
 		int maxY = 0;
 
@@ -99,6 +107,16 @@ public class Step1 {
 			pointLines.add(pointLine);
 
 		}
+		
+		maxY += 2;
+		
+		List<Coord> points = new ArrayList<>();
+		points.add(new Coord(minX, maxY));
+		points.add(new Coord(maxX, maxY));
+		Line bottom = new Line(points);
+		pointLines.add(bottom);
+		
+		
 		Grid grid = new Grid(minX, minY, maxX, maxY);
 
 		pointLines.forEach(grid::addLine);
