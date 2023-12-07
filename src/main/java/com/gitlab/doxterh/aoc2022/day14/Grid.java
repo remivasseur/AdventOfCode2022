@@ -66,7 +66,7 @@ public class Grid {
 	}
 
 	public Cell get(int x, int y) {
-		if (x < minX || x > maxX || y > maxY) {
+		if (x < minX || x > maxX) {
 			return new Cell(new Coord(x,y), '!');
 		}
 		
